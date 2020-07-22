@@ -53,5 +53,6 @@ void Interactor::render() {
         glfwSwapBuffers(gl_window);
         glfwPollEvents();
     }
+    glfwTerminate();
 }
 

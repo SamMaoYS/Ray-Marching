@@ -1,27 +1,13 @@
 #include <iostream>
 
-// GLEW
-#define GLEW_STATIC
-#include <GL/glew.h>
-
-// GLFW
-#include <GLFW/glfw3.h>
-
-// GLM
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
-
-#define STB_IMAGE_IMPLEMENTATION
-
-#include "stb_image.h"
-
 #include "window.h"
 #include "interactor.h"
-
-void keyInteractor(GLFWwindow *window);
+#include "actor.h"
 
 int main(int argc, char **argv) {
+    Actor act;
+    act.genCube();
+
     Window *window = nullptr;
     try {
         window = new Window();
@@ -41,11 +27,5 @@ int main(int argc, char **argv) {
     delete interactor;
     delete window;
     delete camera;
-    glfwTerminate();
     return EXIT_SUCCESS;
-}
-
-void keyInteractor(GLFWwindow *window) {
-    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-        glfwSetWindowShouldClose(window, true);
 }

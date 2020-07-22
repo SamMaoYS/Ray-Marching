@@ -9,6 +9,7 @@ find_package(GLEW REQUIRED)
 find_package(OpenGL REQUIRED)
 find_package(glfw3 3.3 REQUIRED)
 find_package(glm REQUIRED)
+find_package (Eigen3 REQUIRED)
 
 if (GLEW_FOUND)
     include_directories(${GLEW_INCLUDE_DIRS})
@@ -16,8 +17,9 @@ if (GLEW_FOUND)
 endif()
 
 include_directories(SYSTEM includes)
+include_directories(${EIGEN3_INCLUDE_DIRS})
 
 file(GLOB resources "includes/*.h" "src/*.cpp")
 
 add_executable (main ${resources})
-target_link_libraries (main OpenGL::GL glfw)
+target_link_libraries (main OpenGL::GL Eigen3::Eigen glfw)
