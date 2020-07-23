@@ -3,7 +3,6 @@
 //
 
 #include "actor.h"
-#include <Eigen/Dense>
 
 Actor::Actor() {
 
@@ -13,11 +12,7 @@ Actor::~Actor() {
 
 }
 
-float *Actor::genCube() {
-    typedef Eigen::Array<float, 1, 2> Arr2f;
-    typedef Eigen::Array<float, 1, 3> Arr3f;
-    typedef Eigen::Array<float, 1, 4> Arr4f;
-
+Mat36_12f Actor::genCube() {
     Arr3f a0(0.5, 0.5, 0.5);
     Arr3f b0(0.5, 0.5, -0.5);
     Arr3f c0(-0.5, 0.5, -0.5);
@@ -41,12 +36,6 @@ float *Actor::genCube() {
     Arr2f t3(1, 1);
 
     Arr4f white(1, 1, 1, 1);
-
-    typedef Eigen::Matrix<float, 6, 2, Eigen::RowMajor> Mat6_2f;
-    typedef Eigen::Matrix<float, 36, 2, Eigen::RowMajor> Mat36_2f;
-    typedef Eigen::Matrix<float, 36, 3, Eigen::RowMajor> Mat36_3f;
-    typedef Eigen::Matrix<float, 36, 4, Eigen::RowMajor> Mat36_4f;
-    typedef Eigen::Matrix<float, 36, 12, Eigen::RowMajor> Mat36_12f;
 
     Mat36_3f pos;
     pos << d0, d1, a1, a1, a0, d0, // front face
@@ -76,5 +65,5 @@ float *Actor::genCube() {
     cube.block<36, 3>(0, 7) = normals;
     cube.block<36, 2>(0, 10) = t_coords;
 
-    return cube.data();
+    return cube;
 }

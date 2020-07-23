@@ -24,12 +24,8 @@ void io::mouseCallBack(GLFWwindow *gl_window, double x, double y) {
 
     mouse_pos_new = glm::dvec2(x, y);
     mouse_offset = mouse_pos_new - mouse_pos_old;
-    // Y coordinates go from bottom to top
-    mouse_offset.y = -mouse_offset.y;
 
     mouse_pos_old = mouse_pos_new;
-
-//    std::cout << "x: " << mouse_pos_new.x << "y: " << mouse_pos_new.x << std::endl;
 }
 
 void io::scrollCallBack(GLFWwindow *gl_window, double x_offset, double y_offset) {

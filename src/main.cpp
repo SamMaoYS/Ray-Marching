@@ -2,12 +2,8 @@
 
 #include "window.h"
 #include "interactor.h"
-#include "actor.h"
 
 int main(int argc, char **argv) {
-    Actor act;
-    act.genCube();
-
     Window *window = nullptr;
     try {
         window = new Window();

@@ -70,14 +70,14 @@ void Camera::rotateCamera(GLfloat x_offset, GLfloat y_offset) {
 }
 
 void Camera::zoomCamera(GLfloat scroll) {
-    if (this->cam_zoom_ >= 44.1f && this->cam_zoom_ <= 45.9f) {
-        this->cam_zoom_ -= 0.1f*scroll;
+    if (this->cam_zoom_ >= 1.0f && this->cam_zoom_ <= 45.0f) {
+        this->cam_zoom_ -= scroll;
     }
-    if (this->cam_zoom_ <= 44.1f) {
-        this->cam_zoom_ = 44.1f;
+    if (this->cam_zoom_ <= 1.0f) {
+        this->cam_zoom_ = 1.0f;
     }
-    if (this->cam_zoom_ >= 45.9f) {
-        this->cam_zoom_ = 45.9f;
+    if (this->cam_zoom_ >= 45.0f) {
+        this->cam_zoom_ = 45.0f;
     }
 }
 
