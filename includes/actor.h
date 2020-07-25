@@ -8,22 +8,23 @@
 
 #include <iostream>
 #include <Eigen/Dense>
-
-typedef Eigen::Array<float, 1, 2> Arr2f;
-typedef Eigen::Array<float, 1, 3> Arr3f;
-typedef Eigen::Array<float, 1, 4> Arr4f;
-typedef Eigen::Matrix<float, 6, 2, Eigen::RowMajor> Mat6_2f;
-typedef Eigen::Matrix<float, 36, 2, Eigen::RowMajor> Mat36_2f;
-typedef Eigen::Matrix<float, 36, 3, Eigen::RowMajor> Mat36_3f;
-typedef Eigen::Matrix<float, 36, 4, Eigen::RowMajor> Mat36_4f;
-typedef Eigen::Matrix<float, 36, 12, Eigen::RowMajor> Mat36_12f;
+#include "shader.h"
+#include "poly_data.h"
 
 class Actor {
 public:
     Actor();
+    Actor(GLsizei size);
     ~Actor();
 
-    Mat36_12f genCube();
+    void setPolyData(PolyData *poly_data_ptr);
+    void bind();
+    void erase();
+
+private:
+    PolyData *poly_data_ptr_;
+    GLuint *vao_;
+    GLsizei vao_size_;
 };
 
 

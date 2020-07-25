@@ -11,12 +11,17 @@
 #include <sstream>
 #include <iostream>
 
+#ifndef GLEW_STATIC
+#define GLEW_STATIC
+#endif
 #include <GL/glew.h>
 #include <glm/glm.hpp>
 
 class Shader {
 public:
     GLuint program;
+
+    Shader() {}
 
     // Constructor generates the shader on the fly
     Shader(const GLchar *vertexPath, const GLchar *fragmentPath) {

@@ -26,7 +26,7 @@ bool Interactor::initialize() {
 
     glfwSetCursorPosCallback(window_->getGLWindowPtr(), io::mouseCallBack);
     glfwSetScrollCallback(window_->getGLWindowPtr(), io::scrollCallBack);
-    glfwSetInputMode(window_->getGLWindowPtr(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+//    glfwSetInputMode(window_->getGLWindowPtr(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     return false;
 }
 
@@ -49,36 +49,18 @@ void Interactor::render() {
 
     GLFWwindow *gl_window = window_->getGLWindowPtr();
     window_->getSize(width_, height_);
-    Actor act;
-    Mat36_12f cube = act.genCube();
 
     Shader light_shader("../shaders/light.vs", "../shaders/light.frag");
     Shader cube_shader("../shaders/model.vs", "../shaders/model.frag");
 
-    unsigned int VBO, cubeVAO;
-    glGenVertexArrays(1, &cubeVAO);
-    glGenBuffers(1, &VBO);
+    PolyData* cube_ptr = new PolyData();
+    cube_ptr->genCube();
 
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(float)*cube.size(), cube.data(), GL_STATIC_DRAW);
+    Actor* cube_actor = new Actor();
+    cube_actor->setPolyData(cube_ptr);
 
-    glBindVertexArray(cubeVAO);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 12 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 12 * sizeof(float), (void*)(3 * sizeof(float)));
-    glEnableVertexAttribArray(1);
-    glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 12 * sizeof(float), (void*)(7 * sizeof(float)));
-    glEnableVertexAttribArray(2);
-    glVertexAttribPointer(3, 2, GL_FLOAT, GL_FALSE, 12 * sizeof(float), (void*)(10 * sizeof(float)));
-    glEnableVertexAttribArray(3);
-
-    unsigned int lightVAO;
-    glGenVertexArrays(1, &lightVAO);
-    glBindVertexArray(lightVAO);
-
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 12 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
+    Actor light_actor;
+    light_actor.setPolyData(cube_ptr);
 
     glm::vec3 light_pos(1.2f, 1.0f, 2.0f);
 
@@ -110,7 +92,19 @@ void Interactor::render() {
         glm::mat4 model = glm::mat4(1.0f);
         cube_shader.setMat4("model", model);
 
-        glBindVertexArray(cubeVAO);
+        cube_actor->bind();
+        glDrawArrays(GL_TRIANGLES, 0, 36);
+
+        light_shader.use();
+        light_shader.setMat4("projection", projection);
+        light_shader.setMat4("view", view);
+        model = glm::mat4(1.0f);
+        model = glm::translate(model, light_pos);
+        model = glm::scale(model, glm::vec3(0.2f));
+        light_shader.setMat4("model", model);
+        light_shader.setVec3("lightColor", 1.0, 1.0, 1.0);
+
+        light_actor.bind();
         glDrawArrays(GL_TRIANGLES, 0, 36);
 
         // swap buffers and poll IO events
@@ -118,9 +112,9 @@ void Interactor::render() {
         glfwPollEvents();
     }
 
-    glDeleteVertexArrays(1, &cubeVAO);
-    glDeleteVertexArrays(1, &lightVAO);
-    glDeleteBuffers(1, &VBO);
+    cube_actor->erase();
+    light_actor.erase();
+    cube_ptr->erase();
 
     glfwTerminate();
 }
