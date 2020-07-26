@@ -4,17 +4,14 @@
 
 #include "interactor.h"
 #include "io.h"
-#include "actor.h"
 #include "shader.h"
 #include <glm/gtc/matrix_transform.hpp>
+
+class Actor;
 
 Interactor::Interactor(Window *window, Camera* camera) {
     window_ = window;
     current_camera_ = camera;
-}
-
-Interactor::~Interactor() {
-
 }
 
 void Interactor::setCurrentCamera(Camera* camera) {
@@ -50,20 +47,6 @@ void Interactor::render() {
     GLFWwindow *gl_window = window_->getGLWindowPtr();
     window_->getSize(width_, height_);
 
-    Shader light_shader("../shaders/light.vs", "../shaders/light.frag");
-    Shader cube_shader("../shaders/model.vs", "../shaders/model.frag");
-
-    PolyData* cube_ptr = new PolyData();
-    cube_ptr->genCube();
-
-    Actor* cube_actor = new Actor();
-    cube_actor->setPolyData(cube_ptr);
-
-    Actor light_actor;
-    light_actor.setPolyData(cube_ptr);
-
-    glm::vec3 light_pos(1.2f, 1.0f, 2.0f);
-
     while (!glfwWindowShouldClose(gl_window)) {
         float current_time = glfwGetTime();
         io::time_delta = current_time - io::time_old;
@@ -83,39 +66,24 @@ void Interactor::render() {
         glm::mat4 projection = glm::perspective(glm::radians(current_camera_->getCameraZoom()), (float)width_ / (float)height_, 0.1f, 100.0f);
         glm::mat4 view = current_camera_->getViewMatrix();
 
-        cube_shader.use();
-        cube_shader.setVec3("lightColor", 1.0, 1.0, 1.0);
-        cube_shader.setVec3("lightPos", light_pos);
-        cube_shader.setVec3("viewPos", current_camera_->getCameraPos());
-        cube_shader.setMat4("projection", projection);
-        cube_shader.setMat4("view", view);
-        glm::mat4 model = glm::mat4(1.0f);
-        cube_shader.setMat4("model", model);
-
-        cube_actor->bind();
-        glDrawArrays(GL_TRIANGLES, 0, 36);
-
-        light_shader.use();
-        light_shader.setMat4("projection", projection);
-        light_shader.setMat4("view", view);
-        model = glm::mat4(1.0f);
-        model = glm::translate(model, light_pos);
-        model = glm::scale(model, glm::vec3(0.2f));
-        light_shader.setMat4("model", model);
-        light_shader.setVec3("lightColor", 1.0, 1.0, 1.0);
-
-        light_actor.bind();
-        glDrawArrays(GL_TRIANGLES, 0, 36);
+        for (Actor *actor_ptr_ : actor_ptr_vec_) {
+            actor_ptr_->setProjectionMatrix(projection);
+            actor_ptr_->setViewMatrix(view);
+            actor_ptr_->setViewPos(current_camera_->getCameraPos());
+            draw(actor_ptr_);
+        }
 
         // swap buffers and poll IO events
         glfwSwapBuffers(gl_window);
         glfwPollEvents();
     }
 
-    cube_actor->erase();
-    light_actor.erase();
-    cube_ptr->erase();
+    for (Actor *actor_ptr_ : actor_ptr_vec_)
+        erase(actor_ptr_);
 
     glfwTerminate();
 }
 
+void Interactor::addActor(Actor* actor) {
+    actor_ptr_vec_.push_back(actor);
+}

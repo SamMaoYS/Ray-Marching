@@ -82,8 +82,8 @@ void PolyData::genCube() {
     this->bindVBO();
 }
 
-void PolyData::bind() {
-    glBindBuffer(GL_ARRAY_BUFFER, *vbo_);
+void bind(PolyData *poly_data_ptr) {
+    glBindBuffer(GL_ARRAY_BUFFER, *poly_data_ptr->vbo_);
 }
 
 void PolyData::bindVBO() {
@@ -99,7 +99,8 @@ GLuint PolyData::calFieldSize() const {
     return size;
 }
 
-void PolyData::erase() {
-    glDeleteBuffers(vbo_size_, vbo_);
+void erase(PolyData *poly_data_ptr) {
+    glDeleteBuffers(poly_data_ptr->vbo_size_, poly_data_ptr->vbo_);
 }
+
 

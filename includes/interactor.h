@@ -8,14 +8,19 @@
 
 #include "window.h"
 #include "camera.h"
+#include "actor.h"
 #include <vector>
+
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
 class Interactor {
 public:
     Interactor(Window* window, Camera* camera);
-    ~Interactor();
+    ~Interactor() = default;
 
     void render();
+    void addActor(Actor* actor);
 
     void setCurrentCamera(Camera* camera);
 
@@ -29,6 +34,7 @@ protected:
 private:
     Window *window_;
     Camera *current_camera_;
+    std::vector<Actor*> actor_ptr_vec_;
 
     int width_;
     int height_;

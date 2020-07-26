@@ -26,13 +26,13 @@ typedef Eigen::Matrix<float, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor> Ma
 struct VertexField {
     VertexField()
             : pos(0), size(0), type(GL_FLOAT), normalize(false), offset(0) {}
-    VertexField(GLuint in_pos, GLuint in_size, int in_type, bool in_normalize = GL_FALSE, int in_offset = 0)
+    VertexField(GLuint in_pos, GLuint in_size, GLenum in_type, GLboolean in_normalize = GL_FALSE, int in_offset = 0)
             : pos(in_pos), size(in_size), type(in_type), normalize(in_normalize), offset(in_offset) {}
 
     GLuint pos;
     GLuint size;
-    int type;
-    bool normalize;
+    GLenum type;
+    GLboolean normalize;
     int offset;
 };
 typedef std::vector<VertexField> VertexFieldVector;
@@ -45,15 +45,14 @@ public:
 
     void genCube();
 
-    void bind();
-    void erase();
-
     inline const float* data() const {return data_.data();}
     inline GLuint dataSize() const {return data_size_;}
 
     inline VertexFieldVector fields() const {return fields_;}
     inline GLuint fieldSize() const {return field_size_;}
 protected:
+    friend void bind(PolyData *poly_data_ptr);
+    friend void erase(PolyData *poly_data_ptr);
     void bindVBO();
     GLuint calFieldSize() const;
 
