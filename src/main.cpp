@@ -23,24 +23,29 @@ int main(int argc, char **argv) {
     PolyData cube;
     cube.genCube();
 
-    glm::vec3 light_pos(1.2f, 1.0f, 2.0f);
+    Light light;
+    light.pos = glm::vec3(0.0f, 1.0f, 1.0f);
+    light.color = glm::vec3(1.0);
+
+    std::string diffuse_tex_path = "../data/container.png";
+    std::string specular_tex_path = "../data/container_specular.png";
 
     Actor cube_actor;
     cube_actor.setPolyData(&cube);
     cube_actor.setShader(&cube_shader);
-    cube_actor.setLightColor(glm::vec3(1.0, 1.0, 1.0));
-    cube_actor.setLightPos(light_pos);
+    cube_actor.setLight(light);
     glm::mat4 model = glm::mat4(1.0f);
     cube_actor.setModelMatrix(model);
     cube_actor.setDrawParams(GL_TRIANGLES, 0, 36);
+    cube_actor.loadDiffuseTexture(diffuse_tex_path);
+    cube_actor.loadSpecularTexture(specular_tex_path);
 
     Actor light_actor;
     light_actor.setPolyData(&cube);
     light_actor.setShader(&light_shader);
-    light_actor.setLightColor(glm::vec3(1.0, 1.0, 1.0));
-    light_actor.setLightPos(light_pos);
+    light_actor.setLight(light);
     model = glm::mat4(1.0f);
-    model = glm::translate(model, light_pos);
+    model = glm::translate(model, light.pos);
     model = glm::scale(model, glm::vec3(0.2f));
     light_actor.setModelMatrix(model);
     light_actor.setDrawParams(GL_TRIANGLES, 0, 36);

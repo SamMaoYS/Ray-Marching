@@ -19,9 +19,7 @@
 
 class Shader {
 public:
-    GLuint program;
-
-    Shader() {}
+    Shader() = default;
 
     // Constructor generates the shader on the fly
     Shader(const GLchar *vertexPath, const GLchar *fragmentPath) {
@@ -147,6 +145,8 @@ public:
     void setMat4(const std::string &name, const glm::mat4 &mat) const {
         glUniformMatrix4fv(glGetUniformLocation(this->program, name.c_str()), 1, GL_FALSE, &mat[0][0]);
     }
+
+    GLuint program;
 };
 
 

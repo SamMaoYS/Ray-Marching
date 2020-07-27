@@ -47,6 +47,9 @@ void Interactor::render() {
     GLFWwindow *gl_window = window_->getGLWindowPtr();
     window_->getSize(width_, height_);
 
+    for (Actor *actor_ptr_ : actor_ptr_vec_)
+        init(actor_ptr_);
+
     while (!glfwWindowShouldClose(gl_window)) {
         float current_time = glfwGetTime();
         io::time_delta = current_time - io::time_old;
