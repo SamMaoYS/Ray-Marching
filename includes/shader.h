@@ -147,6 +147,16 @@ public:
     }
 
     GLuint program;
+
+    void bindInitFunc(std::function<void(Shader*)> &f) {init_func_ = f;}
+    void bindRuntimeFunc(std::function<void(Shader*)> &f) {runtime_func_ = f;}
+
+    void useInitFunc(Shader* shader_ptr) {init_func_(shader_ptr);}
+    void useRuntimeFunc(Shader* shader_ptr) {runtime_func_(shader_ptr);}
+
+private:
+    std::function<void(Shader*)> init_func_;
+    std::function<void(Shader*)> runtime_func_;
 };
 
 

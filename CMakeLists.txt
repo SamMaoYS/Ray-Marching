@@ -10,6 +10,7 @@ find_package(OpenGL REQUIRED)
 find_package(glfw3 3.3 REQUIRED)
 find_package(glm REQUIRED)
 find_package (Eigen3 REQUIRED)
+find_package(Boost REQUIRED)
 
 if (GLEW_FOUND)
     include_directories(${GLEW_INCLUDE_DIRS})
@@ -19,7 +20,10 @@ endif()
 include_directories(SYSTEM includes)
 include_directories(${EIGEN3_INCLUDE_DIRS})
 
+include_directories(${Boost_INCLUDE_DIR})
+link_directories(${Boost_LIBRARY_DIR})
+
 file(GLOB resources "includes/*.h" "src/*.cpp")
 
 add_executable (main ${resources})
-target_link_libraries (main OpenGL::GL Eigen3::Eigen glfw)
+target_link_libraries (main OpenGL::GL Eigen3::Eigen glfw ${Boost_LIBRARIES})
