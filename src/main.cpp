@@ -2,12 +2,6 @@
 
 #include "window.h"
 #include "interactor.h"
-#include <boost/any.hpp>
-#include <boost/function.hpp>
-#include <boost/bind.hpp>
-#include <boost/lambda/lambda.hpp>
-
-#define SETVEC3 static_cast<void(Shader:: *) (const std::string &str, const glm::vec3 &value) const>
 
 int main(int argc, char **argv) {
     Window *window = nullptr;
@@ -26,12 +20,6 @@ int main(int argc, char **argv) {
     Shader light_shader("../shaders/light.vs", "../shaders/light.frag");
     Shader cube_shader("../shaders/model.vs", "../shaders/model.frag");
 
-    std::vector<boost::any> a;
-
-    boost::function<void(const glm::vec3 &value)> const f1 = boost::bind(SETVEC3(&Shader::setVec3), &cube_shader, "light.pos", boost::lambda::_1);
-    a.push_back(f1);
-    auto p = boost::any_cast<boost::function<void(const glm::vec3 &value)> const>(a[0]);
-    p(glm::vec3(10.0));
     PolyData cube;
     cube.genCube();
 
@@ -59,6 +47,16 @@ int main(int argc, char **argv) {
     model = glm::mat4(1.0f);
     model = glm::translate(model, light.pos);
     model = glm::scale(model, glm::vec3(0.2f));
+
+    Eigen::Affine3f m(Eigen::Affine3f::Identity());
+    m.translate(Eigen::Vector3f(0,1,1));
+    m.scale(0.2);
+
+    glm::mat4 k = glm::mat4(1.0);
+
+    std::cout << typeid(model).name() <<std::endl;
+    std::cout << typeid(glm::mat4).name() <<std::endl;
+
     light_actor.setModelMatrix(model);
     light_actor.setDrawParams(GL_TRIANGLES, 0, 36);
 

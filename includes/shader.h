@@ -16,6 +16,7 @@
 #endif
 #include <GL/glew.h>
 #include <glm/glm.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 class Shader {
 public:
@@ -98,65 +99,30 @@ public:
     }
 
     // Set uniform value
-    void setBool(const std::string &name, GLboolean value) const {
-        glUniform1i(glGetUniformLocation(this->program, name.c_str()), (GLint) value);
-    }
-
-    void setInt(const std::string &name, GLint value) const {
-        glUniform1i(glGetUniformLocation(this->program, name.c_str()), value);
-    }
-
-    void setFloat(const std::string &name, GLfloat value) const {
-        glUniform1f(glGetUniformLocation(this->program, name.c_str()), value);
-    }
-
-    void setVec2(const std::string &name, const glm::vec2 &value) const {
-        glUniform2fv(glGetUniformLocation(this->program, name.c_str()), 1, &value[0]);
-    }
-
-    void setVec2(const std::string &name, GLfloat x, GLfloat y) const {
-        glUniform2f(glGetUniformLocation(this->program, name.c_str()), x, y);
-    }
-
-    void setVec3(const std::string &name, const glm::vec3 &value) const {
-        glUniform3fv(glGetUniformLocation(this->program, name.c_str()), 1, &value[0]);
-    }
-
-    void setVec3(const std::string &name, GLfloat x, GLfloat y, GLfloat z) const {
-        glUniform3f(glGetUniformLocation(this->program, name.c_str()), x, y, z);
-    }
-
-    void setVec4(const std::string &name, const glm::vec4 &value) const {
-        glUniform4fv(glGetUniformLocation(this->program, name.c_str()), 1, &value[0]);
-    }
-
-    void setVec4(const std::string &name, GLfloat x, GLfloat y, GLfloat z, GLfloat w) const {
-        glUniform4f(glGetUniformLocation(this->program, name.c_str()), x, y, z, w);
-    }
-
-    void setMat2(const std::string &name, const glm::mat2 &mat) const {
-        glUniformMatrix2fv(glGetUniformLocation(this->program, name.c_str()), 1, GL_FALSE, &mat[0][0]);
-    }
-
-    void setMat3(const std::string &name, const glm::mat3 &mat) const {
-        glUniformMatrix3fv(glGetUniformLocation(this->program, name.c_str()), 1, GL_FALSE, &mat[0][0]);
-    }
-
-    void setMat4(const std::string &name, const glm::mat4 &mat) const {
-        glUniformMatrix4fv(glGetUniformLocation(this->program, name.c_str()), 1, GL_FALSE, &mat[0][0]);
+    template<typename T>
+    void setUniform(const std::string &name, const T &val) const {
+        const std::type_info& type = typeid(val);
+        if (type == typeid(GLboolean))
+            glUniform1i(glGetUniformLocation(this->program, name.c_str()), (GLint) val);
+        else if (type == typeid(GLint))
+            glUniform1i(glGetUniformLocation(this->program, name.c_str()), val);
+        else if (type == typeid(GLfloat))
+            glUniform1f(glGetUniformLocation(this->program, name.c_str()), val);
+        else if (type == typeid(glm::vec2))
+            glUniform2fv(glGetUniformLocation(this->program, name.c_str()), 1, glm::value_ptr(val));
+        else if (type == typeid(glm::vec3))
+            glUniform3fv(glGetUniformLocation(this->program, name.c_str()), 1, glm::value_ptr(val));
+        else if (type == typeid(glm::vec4))
+            glUniform4fv(glGetUniformLocation(this->program, name.c_str()), 1, glm::value_ptr(val));
+        else if (type == typeid(glm::mat2))
+            glUniformMatrix2fv(glGetUniformLocation(this->program, name.c_str()), 1, GL_FALSE, glm::value_ptr(val));
+        else if (type == typeid(glm::mat3))
+            glUniformMatrix3fv(glGetUniformLocation(this->program, name.c_str()), 1, GL_FALSE, glm::value_ptr(val));
+        else if (type == typeid(glm::mat4))
+            glUniformMatrix4fv(glGetUniformLocation(this->program, name.c_str()), 1, GL_FALSE, glm::value_ptr(val));
     }
 
     GLuint program;
-
-    void bindInitFunc(std::function<void(Shader*)> &f) {init_func_ = f;}
-    void bindRuntimeFunc(std::function<void(Shader*)> &f) {runtime_func_ = f;}
-
-    void useInitFunc(Shader* shader_ptr) {init_func_(shader_ptr);}
-    void useRuntimeFunc(Shader* shader_ptr) {runtime_func_(shader_ptr);}
-
-private:
-    std::function<void(Shader*)> init_func_;
-    std::function<void(Shader*)> runtime_func_;
 };
 
 
