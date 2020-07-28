@@ -90,22 +90,22 @@ void Actor::loadSpecularTexture(const std::string &path) {
 
 void init(Actor *actor_ptr) {
     actor_ptr->shader_ptr_->use();
-    actor_ptr->shader_ptr_->setInt("material.diffuse", 0);
-    actor_ptr->shader_ptr_->setInt("material.specular", 1);
+    actor_ptr->shader_ptr_->setUniform("material.diffuse", 0);
+    actor_ptr->shader_ptr_->setUniform("material.specular", 1);
 }
 
 void draw(Actor *actor_ptr) {
     actor_ptr->shader_ptr_->use();
-    actor_ptr->shader_ptr_->setMat4("projection", actor_ptr->projection_);
-    actor_ptr->shader_ptr_->setMat4("view", actor_ptr->view_);
-    actor_ptr->shader_ptr_->setMat4("model", actor_ptr->model_);
-    actor_ptr->shader_ptr_->setVec3("light.pos", actor_ptr->light_.pos);
-    actor_ptr->shader_ptr_->setVec3("light.color", actor_ptr->light_.color);
-    actor_ptr->shader_ptr_->setVec3("light.ambient", actor_ptr->light_.ambient);
-    actor_ptr->shader_ptr_->setVec3("light.diffuse", actor_ptr->light_.diffuse);
-    actor_ptr->shader_ptr_->setVec3("light.specular", actor_ptr->light_.specular);
-    actor_ptr->shader_ptr_->setVec3("viewPos", actor_ptr->view_pos_);
-    actor_ptr->shader_ptr_->setFloat("material.shininess", actor_ptr->material_.shininess);
+    actor_ptr->shader_ptr_->setUniform("projection", actor_ptr->projection_);
+    actor_ptr->shader_ptr_->setUniform("view", actor_ptr->view_);
+    actor_ptr->shader_ptr_->setUniform("model", actor_ptr->model_);
+    actor_ptr->shader_ptr_->setUniform("light.pos", actor_ptr->light_.pos);
+    actor_ptr->shader_ptr_->setUniform("light.color", actor_ptr->light_.color);
+    actor_ptr->shader_ptr_->setUniform("light.ambient", actor_ptr->light_.ambient);
+    actor_ptr->shader_ptr_->setUniform("light.diffuse", actor_ptr->light_.diffuse);
+    actor_ptr->shader_ptr_->setUniform("light.specular", actor_ptr->light_.specular);
+    actor_ptr->shader_ptr_->setUniform("viewPos", actor_ptr->view_pos_);
+    actor_ptr->shader_ptr_->setUniform("material.shininess", actor_ptr->material_.shininess);
 
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, actor_ptr->material_.diffuse_texture);

@@ -26,12 +26,6 @@ int main(int argc, char **argv) {
     Shader light_shader("../shaders/light.vs", "../shaders/light.frag");
     Shader cube_shader("../shaders/model.vs", "../shaders/model.frag");
 
-    std::vector<boost::any> a;
-
-    boost::function<void(const glm::vec3 &value)> const f1 = boost::bind(SETVEC3(&Shader::setVec3), &cube_shader, "light.pos", boost::lambda::_1);
-    a.push_back(f1);
-    auto p = boost::any_cast<boost::function<void(const glm::vec3 &value)> const>(a[0]);
-    p(glm::vec3(10.0));
     PolyData cube;
     cube.genCube();
 
